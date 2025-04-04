@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="lavender">#8692f7</color>
+    <color name="purple">#800080</color>
+    <color name="colorPrimary">	#ff7b00</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+
+    <!--mood color-->
+    <color name="colorSuperHappy">#F8EC50</color>
+    <color name="colorHappy">#B8E986</color>
+    <color name="colorNormal">#468AD9</color>
+    <color name="colorDisappointed">#9B9B9B</color>
+    <color name="colorSad">#DE3C50</color>
+
+    <!-- colors for button style -->
+
+    <color name="gradient_start_color">#4c84ff</color>
+    <color name="gradient_end_color">#18a3fe</color>
+
+
+    <!-- colors for tab and screen text -->
+
+
+        <!-- Primary Colors -->
+        <color name="purple_500">#6200EE</color>
+        <color name="teal_700">#018786</color>
+
+        <color name="gray_light">#E0E0E0</color>
+    <color name="tab_indicator_gray">#D3D3D3</color>
+    <color name="intro_title_color">#222222</color>
+
+
+</resources>
