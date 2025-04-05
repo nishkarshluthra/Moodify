@@ -20,6 +20,33 @@ Moodify is a mobile application designed to assist users in monitoring and impro
 - *Journaling & Self-Expression*: Tools for writing, voice notes, and creative outlets.
 
 - *Mood Insights & Analytics*: Data visualizations and trend analysis for emotional patterns.
+## APIs Used
+
+- Google ML Kit
+- Firebase Cloud Messaging (FCM)
+- Firebase Authentication
+- Firebase Firestore
+- Spotify API
+- Google Calendar
+
+
+
+##  Modules Description
+
+| Module | Description |
+|--------|-------------|
+| **Authentication** | Secure login/signup using Firebase (role-based for users, therapists, admins). |
+| **Mood Detection** | Facial emotion recognition |
+| **Recommendation Engine** | AI-based suggestions for music, meditation, and self-care routines. |
+| **Professional Support** |  Chat/video with real-time notifications. |
+| **Journaling** | Write or speak daily reflections with privacy settings and history logs. |
+| **Mood Analytics** | Visualizations of emotional trends (daily/weekly). |
+| **Notifications** | Motivational, session, and system notifications using Firebase Cloud Messaging. |
+| **Admin Dashboard** | Manage therapist approvals and monitor app-level activities. |
+| **User Profile** | View and update user data; upload avatars; donor toggle supported. |
+| **Chat System** | Therapist-client chat with timestamps, typing indicators, and recent messages view. |
+
+---
 
 ## Tech Stack
 
