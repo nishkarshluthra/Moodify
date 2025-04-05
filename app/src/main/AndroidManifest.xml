@@ -32,6 +32,13 @@
         <activity android:name=".IntroActivity" android:exported="true"/>
         <activity android:name=".SongsActivity" android:exported="true"/>
         <activity android:name=".PlaylistAdapter" android:exported="true"/>
+        <activity android:name=".ChatActivity" android:exported="true"/>
+        <activity android:name=".SelectTherapistActivity" android:exported="true"/>
+        <activity android:name=".TherapistDashboardActivity" android:exported="true"/>
+        <activity android:name=".TherapistLoginActivity" android:exported="true"/>
+        <activity android:name=".TherapistSignUpActivity" android:exported="true"/>
+        <activity android:name=".JournalEntryActivity" android:exported="true"/>
+        <activity android:name=".JournalCalendarActivity" android:exported="true"/>
     </application>
 
 </manifest>

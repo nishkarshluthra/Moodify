@@ -34,6 +34,19 @@
                 android:textStyle="bold"
                 android:textColor="@color/lavender"/>
 
+            <!-- Name Field -->
+            <EditText
+                android:id="@+id/login_name"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/custom_edit"
+                android:padding="8dp"
+                android:hint="Name"
+                android:drawableLeft="@drawable/baseline_person_24"
+                android:drawablePadding="8dp"
+                android:textColor="@color/black"/>
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="50dp"

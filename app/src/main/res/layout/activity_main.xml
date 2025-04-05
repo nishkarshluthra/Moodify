@@ -1,9 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F5F5">
+
+    <!-- Dim background overlay when dashboard is open -->
+    <View
+        android:id="@+id/dashboardOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:visibility="gone" />
+
+    <!-- Dashboard Toggle Button -->
+    <ImageButton
+        android:id="@+id/btnDashboardToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="8dp"
+        android:src="@drawable/baseline_dashboard_24"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Toggle Dashboard" />
 
     <!-- Logout Button (top right corner) -->
     <com.google.android.material.button.MaterialButton
@@ -16,6 +35,201 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+    <!-- Dashboard Panel -->
+    <LinearLayout
+        android:id="@+id/dashboardPanel"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#2c2c2c"
+        android:padding="16dp"
+        android:layout_below="@id/logout"
+        android:visibility="gone"
+        android:elevation="8dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="32dp">
+
+        <!-- Home Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="12dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/round_home_24" />
+
+            <TextView
+                android:id="@+id/navHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Home"
+                android:textColor="#ffffff"
+                android:layout_marginStart="16dp"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/baseline_arrow_right_24"
+                android:layout_alignParentEnd="true" />
+        </LinearLayout>
+
+        <!-- Professional Support Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="12dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/round_groups_24" />
+
+            <TextView
+                android:id="@+id/navSupport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Professional Support"
+                android:textColor="#ffffff"
+                android:layout_marginStart="16dp"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/baseline_arrow_right_24"
+                android:layout_alignParentEnd="true" />
+        </LinearLayout>
+
+        <!-- Journaling Button -->
+        <!-- Journaling Button with Dropdown -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="12dp">
+
+            <!-- Main Journaling Button -->
+            <LinearLayout
+                android:id="@+id/navJournalLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/round_edit_calendar_24" />
+
+                <TextView
+                    android:id="@+id/navJournal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Journaling"
+                    android:textColor="#ffffff"
+                    android:layout_marginStart="16dp"
+                    android:textSize="16sp" />
+
+                <ImageView
+                    android:id="@+id/navJournalArrow"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/baseline_arrow_right_24"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
+
+            <!-- Dropdown Items -->
+            <LinearLayout
+                android:id="@+id/journalDropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="40dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/btnjournal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="• Write Journal"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
+                    android:paddingVertical="4dp" />
+
+                <TextView
+                    android:id="@+id/btnJournalHistory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="• Journal History"
+                    android:textColor="#ffffff"
+                    android:textSize="14sp"
+                    android:paddingVertical="4dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <!-- Mood History Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="12dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_access_time_24" />
+
+            <TextView
+                android:id="@+id/navMoodHistory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mood History"
+                android:textColor="#ffffff"
+                android:layout_marginStart="16dp"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/baseline_arrow_right_24"
+                android:layout_alignParentEnd="true" />
+        </LinearLayout>
+
+        <!-- Logout Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="12dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/baseline_logout_24" />
+
+            <TextView
+                android:id="@+id/navLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:textColor="#ffffff"
+                android:layout_marginStart="16dp"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/baseline_arrow_right_24"
+                android:layout_alignParentEnd="true" />
+        </LinearLayout>
+
+    </LinearLayout>
 
     <!-- Scrollable Content -->
     <ScrollView
@@ -112,8 +326,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Show Songs"
-                            android:backgroundTint="@color/purple_500"
-                            android:textColor="@android:color/white" />
+                            android:visibility="gone"
+                            android:layout_margin="8dp" />
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
@@ -124,28 +338,15 @@
                         app:cardElevation="4dp">
 
                         <Button
-                            android:id="@+id/button1"
+                            android:id="@+id/btnShowPuzzles"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Button 1"
-                            android:backgroundTint="@color/purple_500"
-                            android:textColor="@android:color/white" />
+                            android:text="Show Puzzles"
+                            android:visibility="gone"
+                            android:layout_margin="8dp" />
                     </com.google.android.material.card.MaterialCardView>
 
-                    <com.google.android.material.card.MaterialCardView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:cardCornerRadius="16dp"
-                        app:cardElevation="4dp">
 
-                        <Button
-                            android:id="@+id/button2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Button 2"
-                            android:backgroundTint="@color/purple_500"
-                            android:textColor="@android:color/white" />
-                    </com.google.android.material.card.MaterialCardView>
                 </LinearLayout>
             </HorizontalScrollView>
         </LinearLayout>
@@ -189,4 +390,5 @@
             android:contentDescription="@string/share_mood"
             android:background="?attr/selectableItemBackgroundBorderless" />
     </LinearLayout>
+
 </RelativeLayout>

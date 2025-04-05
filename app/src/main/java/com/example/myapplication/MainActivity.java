@@ -39,10 +39,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.myapplication.model.Puzzle;
+import com.example.myapplication.model.PuzzleManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -59,6 +62,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -87,6 +91,17 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     private TextView userName, resultText,selectedMoodText;
     private Button logout, analyzeButton;
     private EditText inputText;
+    ImageButton btnDashboardToggle;
+    LinearLayout dashboardPanel;
+    TextView navHome, navSupport, navJournal, navLogout;
+    private Button btnShowPuzzles;
+    // Puzzle Management
+    private int currentPuzzleIndex = 0;
+    private List<Puzzle> currentPuzzleList = new ArrayList<>();
+    private String currentMood = "";
+//
+    private TextView btnJournal, btnJournalHistory;
+
     private ImageView moodImageView;
     private ImageButton moodHistoryButton, addCommentButton, shareAppButton, mood_disapButton, mood_sadImageButton, mood_happyImageView,mood_neutralImageView,mood_shappyImageView;
 //    private RelativeLayout parentRelativeLayout;
@@ -100,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     private SharedPreferences mPreferences;
     private int currentDay, currentMoodIndex;
     private String currentComment;
+    private View dashboardOverlay;
+
     private TextView playlistTextView;
     private FirebaseAnalytics mFirebaseAnalytics;
     private List<Playlist> playlists;
@@ -111,6 +128,10 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
     private ImageView capturedImageView;
     private ProcessCameraProvider cameraProvider;
     private Button btnRetake,btnShowSongs,btnCapture;
+    LinearLayout navJournalLayout, journalDropdown;
+
+    ImageView navJournalArrow;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +139,51 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         setContentView(R.layout.activity_main);
         previewView = findViewById(R.id.previewView);
         capturedImageView = findViewById(R.id.capturedImageView);
-         btnCapture = findViewById(R.id.btnCapture);
+        btnDashboardToggle = findViewById(R.id.btnDashboardToggle);
+        dashboardPanel = findViewById(R.id.dashboardPanel);
+        dashboardOverlay = findViewById(R.id.dashboardOverlay);
+
+
+        navHome = findViewById(R.id.navHome);
+        navSupport = findViewById(R.id.navSupport);
+        navJournal = findViewById(R.id.navJournal);
+        navLogout = findViewById(R.id.navLogout);
+
+        btnCapture = findViewById(R.id.btnCapture);
+        btnShowPuzzles = findViewById(R.id.btnShowPuzzles);
+        btnShowPuzzles.setVisibility(View.GONE);
+        btnShowPuzzles.setOnClickListener(v -> {
+            startPuzzleSession();
+        });
+        navJournalLayout = findViewById(R.id.navJournalLayout);
+        journalDropdown = findViewById(R.id.journalDropdown);
+        btnJournal = findViewById(R.id.btnjournal);
+        btnJournalHistory = findViewById(R.id.btnJournalHistory);
+
+// Set click listeners
+        btnJournal.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, JournalEntryActivity.class);
+            startActivity(intent);
+        });
+
+        btnJournalHistory.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, JournalCalendarActivity.class);
+            startActivity(intent);
+        });
+        navJournalArrow = findViewById(R.id.navJournalArrow);
+        navJournalLayout.setOnClickListener(v -> {
+            if (journalDropdown.getVisibility() == View.VISIBLE) {
+                journalDropdown.setVisibility(View.GONE);
+                navJournalArrow.setImageResource(R.drawable.baseline_arrow_right_24);
+            } else {
+                journalDropdown.setVisibility(View.VISIBLE);
+                navJournalArrow.setImageResource(R.drawable.baseline_arrow_drop_down_24);
+            }
+        });
+
+
+
+
         playlists = new ArrayList<>();
         if (allPermissionsGranted()) {
             startCamera();
@@ -127,22 +192,49 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         }
 
         btnCapture.setOnClickListener(v -> takePhoto());
+        btnDashboardToggle.setOnClickListener(v -> {
+                    if (dashboardPanel.getVisibility() == View.VISIBLE) {
+                        // Hide the dashboard
+                        dashboardPanel.setVisibility(View.GONE);
+                        dashboardOverlay.setVisibility(View.GONE);
+                    } else {
+                        // Show the dashboard
+                        dashboardPanel.setVisibility(View.VISIBLE);
+                        dashboardOverlay.setVisibility(View.VISIBLE);
+                    }
+                });
+        navHome.setOnClickListener(v -> {
+            dashboardPanel.setVisibility(View.GONE);
+            Toast.makeText(MainActivity.this, "Home clicked", Toast.LENGTH_SHORT).show();
+            // Optional: Scroll to top or perform other home actions
+        });
+
+
+        navSupport.setOnClickListener(v -> {
+            dashboardPanel.setVisibility(View.GONE);
+            Intent intent = new Intent(MainActivity.this, SelectTherapistActivity.class);
+            startActivity(intent);
+        });
+
+
+
+        navLogout.setOnClickListener(v -> {
+            dashboardPanel.setVisibility(View.GONE);
+            gClient.signOut().addOnCompleteListener(task -> {
+                finish();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            });
+        });
+
 
         Log.d(TAG, "onCreate: MainActivity started");
 
         // Initialize UI
 
         logout = findViewById(R.id.logout);
-//        inputText = findViewById(R.id.inputText);
-//        analyzeButton = findViewById(R.id.analyzeButton);
+//
         resultText = findViewById(R.id.resultText);
-//        selectedMoodText=findViewById(R.id.selectedMoodText);
-//        mood_disapButton = findViewById(R.id.my_mood_disappointed);
-//        mood_sadImageButton = findViewById(R.id.my_mood_sad);
-//        mood_neutralImageView = findViewById(R.id.my_mood_neutral);
-//        mood_happyImageView = findViewById(R.id.my_mood_happy);
-//        mood_shappyImageView = findViewById(R.id.my_mood_super_happy);
-//        parentRelativeLayout = findViewById(R.id.parent_relative_layout);
+//
         addCommentButton = findViewById(R.id.btn_add_comment);
         moodHistoryButton = findViewById(R.id.btn_mood_history);
         shareAppButton = findViewById(R.id.shareButton);
@@ -485,8 +577,8 @@ private void startCamera() {
         btnRetake.setVisibility(View.GONE);
         resultText.setVisibility(View.GONE);
         btnShowSongs.setVisibility(View.GONE);
-        findViewById(R.id.button1).setVisibility(View.GONE);
-        findViewById(R.id.button2).setVisibility(View.GONE);
+        btnShowPuzzles.setVisibility(View.GONE);
+
         // Start camera again
         startCamera();
     }
@@ -561,8 +653,8 @@ private void takePhoto() {
                     btnRetake.setVisibility(View.VISIBLE);
                     resultText.setVisibility(View.VISIBLE);
                     btnShowSongs.setVisibility(View.VISIBLE);
-                    findViewById(R.id.button1).setVisibility(View.VISIBLE);
-                    findViewById(R.id.button2).setVisibility(View.VISIBLE);// Call the function to detect emotion using the photo
+                    btnShowPuzzles.setVisibility(View.VISIBLE);
+
                 }
 
                 @Override
@@ -682,6 +774,78 @@ private void takePhoto() {
                 }
             }
         }).start();
+    }
+
+    private void startPuzzleSession() {
+        currentMood = resultText.getText().toString()
+                .replace("Detected emotion: ", "").toLowerCase();
+
+        currentPuzzleList = new ArrayList<>(PuzzleManager.getPuzzlesForMood(currentMood));
+        Collections.shuffle(currentPuzzleList);
+        currentPuzzleIndex = 0;
+
+        showCurrentPuzzle();
+    }
+
+    private void showCurrentPuzzle() {
+        if (currentPuzzleIndex >= currentPuzzleList.size()) {
+            // All puzzles shown, reshuffle and start over
+            Collections.shuffle(currentPuzzleList);
+            currentPuzzleIndex = 0;
+        }
+
+        Puzzle currentPuzzle = currentPuzzleList.get(currentPuzzleIndex);
+        showPuzzleDialog(currentPuzzle);
+    }
+
+    private void showPuzzleDialog(Puzzle puzzle) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(puzzle.getTitle());
+        builder.setMessage(puzzle.getQuestion());
+
+        final EditText answerInput = new EditText(this);
+        answerInput.setHint("Type your answer...");
+        builder.setView(answerInput);
+
+        builder.setPositiveButton("Submit", (dialog, which) -> {
+            String userAnswer = answerInput.getText().toString().trim();
+            if (userAnswer.isEmpty()) {
+                Toast.makeText(this, "Please enter an answer", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            checkAnswer(userAnswer, puzzle);
+        });
+
+        builder.setNegativeButton("Skip", (dialog, which) -> {
+            moveToNextPuzzle();
+        });
+
+        builder.show();
+    }
+
+    private void checkAnswer(String userAnswer, Puzzle puzzle) {
+        boolean isCorrect = userAnswer.equalsIgnoreCase(puzzle.getAnswer());
+
+        AlertDialog.Builder resultBuilder = new AlertDialog.Builder(this);
+        resultBuilder.setTitle(isCorrect ? "Correct! 🎉" : "Incorrect ❌");
+
+        if (isCorrect) {
+            resultBuilder.setMessage("Great job!");
+        } else {
+            resultBuilder.setMessage("The correct answer was: " + puzzle.getAnswer());
+        }
+
+        resultBuilder.setPositiveButton("Next Puzzle", (dialog, which) -> {
+            moveToNextPuzzle();
+        });
+
+        resultBuilder.setNegativeButton("Finish", null);
+        resultBuilder.show();
+    }
+
+    private void moveToNextPuzzle() {
+        currentPuzzleIndex++;
+        showCurrentPuzzle();
     }
 
 

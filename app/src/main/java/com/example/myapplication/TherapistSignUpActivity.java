@@ -22,17 +22,17 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SignUpActivity extends AppCompatActivity {
+public class TherapistSignUpActivity extends AppCompatActivity {
 
     private FirebaseAuth auth;
-    private EditText signupEmail, signupPassword, loginName;
+    private EditText signupEmail, signupPassword, loginName,Specialization;
     private Button signupButton;
     private TextView loginRedirectText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_therapist_signup);
 
         auth = FirebaseAuth.getInstance();
         signupEmail = findViewById(R.id.signup_email);
@@ -40,6 +40,7 @@ public class SignUpActivity extends AppCompatActivity {
         signupButton = findViewById(R.id.signup_button);
         loginRedirectText = findViewById(R.id.loginRedirectText);
         loginName = findViewById(R.id.login_name);
+        Specialization=findViewById(R.id.Specialization);
 
         signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,7 +48,7 @@ public class SignUpActivity extends AppCompatActivity {
                 String user = signupEmail.getText().toString().trim();
                 String pass = signupPassword.getText().toString().trim();
                 String name = loginName.getText().toString().trim();
-
+                String specialization = Specialization.getText().toString().trim();
                 if (user.isEmpty()) {
                     signupEmail.setError("Email cannot be empty");
                     return;
@@ -60,6 +61,9 @@ public class SignUpActivity extends AppCompatActivity {
                     loginName.setError("Name cannot be empty");
                     return;
                 }
+                if(specialization.isEmpty()){
+                    Specialization.setError("Specialization cannot be empty");
+                }
 
                 auth.createUserWithEmailAndPassword(user, pass)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -68,12 +72,12 @@ public class SignUpActivity extends AppCompatActivity {
                                 if (task.isSuccessful()) {
                                     FirebaseUser firebaseUser = auth.getCurrentUser();
                                     if (firebaseUser != null) {
-                                        saveUserDataToFirestore(firebaseUser.getUid(), user, name);
+                                        saveUserDataToFirestore(firebaseUser.getUid(), user, name,specialization);
                                     }
-                                    Toast.makeText(SignUpActivity.this, "SignUp Successful", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+                                    Toast.makeText(TherapistSignUpActivity.this, "SignUp Successful", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(TherapistSignUpActivity.this, TherapistLoginActivity.class));
                                 } else {
-                                    Toast.makeText(SignUpActivity.this, "SignUp Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(TherapistSignUpActivity.this, "SignUp Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -83,23 +87,24 @@ public class SignUpActivity extends AppCompatActivity {
         loginRedirectText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
+                startActivity(new Intent(TherapistSignUpActivity.this, TherapistLoginActivity.class));
             }
         });
     }
 
-    private void saveUserDataToFirestore(String uid, String email, String name) {
+    private void saveUserDataToFirestore(String uid, String email, String name, String specialization) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference userDoc = db.collection("users").document(uid);
+        DocumentReference userDoc = db.collection("therapists").document(uid);
 
         Map<String, Object> userData = new HashMap<>();
         userData.put("uid", uid);
         userData.put("email", email);
         userData.put("name", name);
-        userData.put("role", "user");
+        userData.put("specialization", specialization);
+        userData.put("available",true);
 
         userDoc.set(userData)
-                .addOnSuccessListener(aVoid -> Toast.makeText(SignUpActivity.this, "User data saved", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(SignUpActivity.this, "Failed to save user data", Toast.LENGTH_SHORT).show());
+                .addOnSuccessListener(aVoid -> Toast.makeText(TherapistSignUpActivity.this, "User data saved", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(TherapistSignUpActivity.this, "Failed to save user data", Toast.LENGTH_SHORT).show());
     }
 }
