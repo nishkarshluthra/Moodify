@@ -43,7 +43,6 @@ Moodify is a mobile application designed to assist users in monitoring and impro
 | **Mood Analytics** | Visualizations of emotional trends (daily/weekly). |
 | **Notifications** | Motivational, session, and system notifications using Firebase Cloud Messaging. |
 | **Admin Dashboard** | Manage therapist approvals and monitor app-level activities. |
-| **User Profile** | View and update user data; upload avatars; donor toggle supported. |
 | **Chat System** | Therapist-client chat with timestamps, typing indicators, and recent messages view. |
 
 ---
