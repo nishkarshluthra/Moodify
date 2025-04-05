@@ -43,6 +43,8 @@ dependencies {
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
 
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
     // Firebase BoM - Ensures version compatibility
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
 

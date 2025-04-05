@@ -315,8 +315,8 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
 
         // Mood History Button
         moodHistoryButton.setOnClickListener(v -> {
-//            Intent intent = new Intent(MainActivity.this, MoodHistoryActivity.class);
-//            startActivity(intent);
+            Intent intent = new Intent(MainActivity.this, MoodHistoryActivity.class);
+            startActivity(intent);
         });
 
         // Share Mood
@@ -551,6 +551,7 @@ private void startCamera() {
                             btnShowSongs.setVisibility(View.VISIBLE);
 //                            updateMood(emotion);  // you can customize updateMood() per emotion
                             fetchSpotifySongs(emotion);  // Automatically fetch Spotify playlists based on detected emotion
+                            new com.example.myapplication.repository.MoodLogger().logMood(emotion);
                         });
 
                     })

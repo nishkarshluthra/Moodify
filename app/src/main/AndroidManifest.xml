@@ -28,6 +28,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" android:exported="true"/>
+        <activity android:name=".MoodHistoryActivity" android:exported="true"/>
         <activity android:name=".SignUpActivity" android:exported="true"/>
         <activity android:name=".IntroActivity" android:exported="true"/>
         <activity android:name=".SongsActivity" android:exported="true"/>
