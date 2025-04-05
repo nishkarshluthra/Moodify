@@ -54,6 +54,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.FirebaseAuth;
 import com.example.myapplication.SharedPreferencesHelper;
 import com.example.myapplication.UpdateDayReceiver;
 import com.example.myapplication.Constants;
@@ -221,8 +222,11 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         navLogout.setOnClickListener(v -> {
             dashboardPanel.setVisibility(View.GONE);
             gClient.signOut().addOnCompleteListener(task -> {
-                finish();
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                FirebaseAuth.getInstance().signOut(); // also sign out from Firebase
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish(); // finish current activity
             });
         });
 
@@ -265,10 +269,15 @@ public class MainActivity extends AppCompatActivity implements GestureDetector.O
         }
 
         // Logout Functionality
-        logout.setOnClickListener(view -> gClient.signOut().addOnCompleteListener(task -> {
-            finish();
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-        }));
+        logout.setOnClickListener(view -> {
+            gClient.signOut().addOnCompleteListener(task -> {
+                FirebaseAuth.getInstance().signOut(); // also sign out from Firebase
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish(); // finish current activity
+            });
+        });
 
         // Initialize Gesture Detector & Preferences
         mDetector = new GestureDetector(this, this);

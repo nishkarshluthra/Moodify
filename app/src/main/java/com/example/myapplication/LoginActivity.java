@@ -55,79 +55,86 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
 
-        loginEmail = findViewById(R.id.login_email);
-        loginPassword = findViewById(R.id.login_password);
+        if(FirebaseAuth.getInstance().getCurrentUser() != null) {
+            startActivity(new Intent(this, MainActivity.class));
+        }
 
-        loginButton = findViewById(R.id.login_button);
-        therapistLoginButton = findViewById(R.id.therapist_login_button);
-        signupRedirectText = findViewById(R.id.signUpRedirectText);
-        forgotPassword = findViewById(R.id.forgot_password);
-        googleBtn = findViewById(R.id.googleBtn);
+        else {
+            setContentView(R.layout.activity_login);
 
-        auth = FirebaseAuth.getInstance();
+            loginEmail = findViewById(R.id.login_email);
+            loginPassword = findViewById(R.id.login_password);
 
-        loginButton.setOnClickListener(v -> {
-            String email = loginEmail.getText().toString();
-            String pass = loginPassword.getText().toString();
+            loginButton = findViewById(R.id.login_button);
+            therapistLoginButton = findViewById(R.id.therapist_login_button);
+            signupRedirectText = findViewById(R.id.signUpRedirectText);
+            forgotPassword = findViewById(R.id.forgot_password);
+            googleBtn = findViewById(R.id.googleBtn);
+
+            auth = FirebaseAuth.getInstance();
+
+            loginButton.setOnClickListener(v -> {
+                String email = loginEmail.getText().toString();
+                String pass = loginPassword.getText().toString();
 
 
-            if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                if (!pass.isEmpty()) {
-                    auth.signInWithEmailAndPassword(email, pass)
-                            .addOnSuccessListener(authResult -> {
+                if (!email.isEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    if (!pass.isEmpty()) {
+                        auth.signInWithEmailAndPassword(email, pass)
+                                .addOnSuccessListener(authResult -> {
 
 
-                                Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(LoginActivity.this, IntroActivity.class));
-                                finish();
-                            }).addOnFailureListener(e ->
-                                    Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show());
-                } else {
-                    loginPassword.setError("Empty fields are not allowed");
-                }
-            } else {
-                loginEmail.setError("Please enter correct email");
-            }
-        });
-
-        therapistLoginButton.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, TherapistLoginActivity.class);
-            startActivity(intent);
-        });
-
-        signupRedirectText.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, SignUpActivity.class)));
-
-        forgotPassword.setOnClickListener(view -> showForgotPasswordDialog());
-
-        gOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-        gClient = GoogleSignIn.getClient(this, gOptions);
-
-        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                        try {
-                            GoogleSignInAccount account = task.getResult(ApiException.class);
-                            if (account != null) {
-
-                                saveUserDataToFirestore(account.getId(), account.getEmail(), account.getDisplayName());
-                                finish();
-                                startActivity(new Intent(LoginActivity.this, IntroActivity.class));
-                            }
-                        } catch (ApiException e) {
-                            Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                        }
+                                    Toast.makeText(LoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                                    startActivity(new Intent(LoginActivity.this, IntroActivity.class));
+                                    finish();
+                                }).addOnFailureListener(e ->
+                                        Toast.makeText(LoginActivity.this, "Login Failed", Toast.LENGTH_SHORT).show());
+                    } else {
+                        loginPassword.setError("Empty fields are not allowed");
                     }
-                });
+                } else {
+                    loginEmail.setError("Please enter correct email");
+                }
+            });
 
-        googleBtn.setOnClickListener(view -> {
-            Intent signInIntent = gClient.getSignInIntent();
-            activityResultLauncher.launch(signInIntent);
-        });
+            therapistLoginButton.setOnClickListener(v -> {
+                Intent intent = new Intent(LoginActivity.this, TherapistLoginActivity.class);
+                startActivity(intent);
+            });
+
+            signupRedirectText.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, SignUpActivity.class)));
+
+            forgotPassword.setOnClickListener(view -> showForgotPasswordDialog());
+
+            gOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
+            gClient = GoogleSignIn.getClient(this, gOptions);
+
+            ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Intent data = result.getData();
+                            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                            try {
+                                GoogleSignInAccount account = task.getResult(ApiException.class);
+                                if (account != null) {
+
+                                    saveUserDataToFirestore(account.getId(), account.getEmail(), account.getDisplayName());
+                                    finish();
+                                    startActivity(new Intent(LoginActivity.this, IntroActivity.class));
+                                }
+                            } catch (ApiException e) {
+                                Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+
+            googleBtn.setOnClickListener(view -> {
+                Intent signInIntent = gClient.getSignInIntent();
+                activityResultLauncher.launch(signInIntent);
+            });
+        }
     }
 
     private void saveUserDataToFirestore(String uid, String email, String name) {
